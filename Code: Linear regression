@@ -1,0 +1,51 @@
+# To support both python 2 and python 3
+from __future__ import division, print_function, unicode_literals
+import numpy as np 
+import matplotlib.pyplot as plt
+# Load the Pandas libraries with alias 'pd' 
+import pandas as pd
+
+# Read data from file 'filename.csv' 
+# (in the same directory that your python process is based)
+# Control delimiters, rows, column names with read_csv (see later) 
+data=pd.read_csv("https://raw.githubusercontent.com/trungdungtdct/test/main/BMI.csv") 
+
+# Preview the first 5 lines of the loaded data 
+data.head(10)
+
+X = pd.read_csv("https://raw.githubusercontent.com/trungdungtdct/test/main/BMI.csv", usecols = ['Heigh'])
+#print(X)
+y=pd.read_csv("https://raw.githubusercontent.com/trungdungtdct/test/main/BMI.csv", usecols = ['weight'])
+#print(y)
+#print('maxX',max(X))
+plt.plot(X, y, 'ro')
+plt.axis([max(X), min(X), max(y),min(y)])
+plt.xlabel('Height (cm)')
+plt.ylabel('Weight (kg)')
+plt.show()
+
+# Building Xbar 
+one = np.ones((X.shape[0], 1))
+Xbar = np.concatenate((one, X), axis = 1)
+print ('Xbar=',Xbar)
+print ('Xbar.T=',Xbar.T)
+
+# Calculating weights of the fitting line 
+A = np.dot(Xbar.T, Xbar)
+print('A=',A)
+b = np.dot(Xbar.T, y)
+w = np.dot(np.linalg.pinv(A), b)
+print('w = ', w)
+# Preparing the fitting line 
+w_0 = w[0][0]
+w_1 = w[1][0]
+x0 = np.linspace(145, 185, 2)
+y0 = w_0 + w_1*x0
+
+# Drawing the fitting line 
+plt.plot(X, y,'ro')     # data 
+plt.plot(x0, y0)               # the fitting line
+plt.axis([140, 190, 45, 75])
+plt.xlabel('Height (cm)')
+plt.ylabel('Weight (kg)')
+plt.show()
